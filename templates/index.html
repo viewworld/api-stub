@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+  <head>
+    <title>ViewWorld API test</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
+    <script src="{{ url_for('static', filename='js/underscore.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/backbone.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/viewworld.js') }}"></script>
+
+    <script>
+
+      $(function() {
+        var FormItemView = Backbone.View.extend({
+
+          tagName: 'li',
+
+          template: _.template($('#form-template').html()),
+
+          initialize: function() {
+            this.model.bind('change', this.render, this);
+            this.model.bind('destroy', this.remove, this);
+          },
+
+          render: function() {
+            this.$el.html(this.template(this.model.toJSON()));
+            return this;
+          }
+
+        });
+
+        var FormListView = Backbone.View.extend({
+
+          initialize: function() {
+            this.model.bind('add', this.addOne, this);
+            this.model.bind('reset', this.addAll, this);
+            //this.model.bind('all', this.render, this);
+
+            this.model.fetch();
+          },
+
+          addOne: function(form) {
+            var view = new FormItemView({model: form});
+            this.$el.append(view.render().el);
+          },
+
+          addAll: function() {
+            this.model.each(this.addOne, this);
+          }
+
+        });
+
+        var forms = new ViewWorld.Collections;
+        var formlist = new FormListView({
+          model: forms,
+          el: '#formlist'
+        });
+      });
+
+    </script>
+
+  </head>
+  <body>
+
+	<ul id="formlist">
+	</ul>
+
+  <script type="text/template" id="form-template">
+    <li><%= title %> (<%= reportCount %>),
+  </script>
+
+  </body>
+</html>
