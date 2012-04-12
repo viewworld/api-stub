@@ -6,6 +6,8 @@
 
   ViewWorld.Form = Backbone.Model.extend({
 
+    urlRoot: '/forms',
+
     defaults: {
       "title": "",
       "owner": "",
@@ -18,7 +20,7 @@
 
     reports: function(models, options) {
       options || (options = {});
-      options.formId = this.id;
+      options.form = this;
       return new ViewWorld.Reports(models, options);
     }
 
@@ -27,7 +29,7 @@
   ViewWorld.Forms = Backbone.Collection.extend({
 
     model: ViewWorld.Form,
-    url: '/forms',
+    url: ViewWorld.Form.prototype.urlRoot,
 
     parse: function(response) {
       return response.forms;
@@ -47,11 +49,23 @@
 
   });
 
+  var reportUrl = function(formId) {
+      return [ViewWorld.Form.prototype.urlRoot,
+              encodeURIComponent(formId), 'reports'].join('/');
+  };
+
   ViewWorld.Report = Backbone.Model.extend({
 
     defaults: {
       "public": false,
       "data": {}
+    },
+
+    initialize: function(attributes, options) {
+      if (options && options.formId) {
+        this.formId = options.formId;
+        this.urlRoot = reportUrl(this.formId);
+      }
     }
 
   });
@@ -61,11 +75,17 @@
     model: ViewWorld.Report,
 
     initialize: function(models, options) {
-      if (options && options.formId) this.formId = options.formId;
+      options || (options = {});
+      if (options.form) this.form = options.form;
+      else if (options.formId) this.formId = options.formId;
+      else throw new Error('Either "form" or "formId" option must be specified');
     },
 
     url: function() {
-      return '/forms/' + encodeURIComponent(this.formId) + '/reports';
+      var id;
+      if (this.form) id = this.form.id;
+      else id = this.formId;
+      return reportUrl(id);
     },
 
     parse: function(response) {
@@ -76,6 +96,8 @@
 
 
   ViewWorld.Collection = Backbone.Model.extend({
+
+    urlRoot: '/collections',
 
     defaults: {
       "title": "",
@@ -90,7 +112,7 @@
   ViewWorld.Collections = Backbone.Collection.extend({
 
     model: ViewWorld.Collection,
-    url: '/collections',
+    url: ViewWorld.Collection.prototype.urlRoot,
 
     parse: function(response) {
       return response.collections;
@@ -104,4 +126,4 @@
 
 }).call(this);
 
-
+/* vi: set sw=2 ts=2: */
