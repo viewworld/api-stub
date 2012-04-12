@@ -71,7 +71,7 @@ def reports(formid):
 
 @app.route('/forms/<formid>/reports/<reportid>',
            methods=['GET', 'PUT', 'DELETE'])
-def form(formid, reportid):
+def report(formid, reportid):
     if formid != testdata.forms['single']['id']:
         return error('Form does not exist')
     if reportid not in (r['id'] for r in testdata.reports):
