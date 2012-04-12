@@ -8,4 +8,4 @@ Running the example
 
     python api.py
 
-then point your browser [here](http://localhost:5000/test/forms)
+then point your browser to [http://localhost:5000](http://localhost:5000).
