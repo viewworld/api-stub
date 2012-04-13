@@ -1,0 +1,118 @@
+{% extends "selleo/base.html" %}
+
+{% block head %}
+<style>
+  .subnav a { cursor: pointer; }
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+
+        <div id="menu" class="span3">
+        </div>
+
+        <div id="main-column" class="span7">
+        </div>
+
+        <div id="side-bar" class="span2">
+            <div class="well" style="padding:12px;margin-bottom: 10px">widget</div>
+            <div class="well" style="padding:12px">widget</div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script id="template-breadcrumb" type="text/html">
+  <% _.each(_.initial(pages), function(page) { %>
+    <li><a href="<%= page.href %>"><%= page.title %></a> <span class="divider">/</span> </li>
+  <% }); %>
+  <li class="active"><%= _.last(pages).title %></li>
+</script>
+
+<script id="template-menu" type="text/html">
+  <div class="well subnav" style="padding: 8px 0;">
+    <ul class="nav nav-list">
+      <li class="nav-header">Inbox:</li>
+      <li id="menu-inbox">
+        <a data-route="inbox"><i class="icon-inbox"></i> All</a>
+        <span class="badge"><%= inboxCount %></span>
+      </li>
+      <li id="menu-inbox-review">
+        <a data-route="inbox/review"><i class="icon-time"></i> Awaiting review</a>
+        <span class="badge"><%= awaitingReviewCount %></span>
+      </li>
+      <li id="menu-inbox-returns">
+        <a data-route="inbox/returns"><i class="icon-time"></i> Awaiting returns </a>
+        <span class="badge"><%= awaitingReturnCount %></span>
+      </li>
+      <li class="nav-header">Manage:</li>
+      <li id="menu-collections">
+        <a data-route="collections"><i class="icon-folder-open"></i> Collections</a>
+      </li>
+      <li id="menu-forms">
+        <a data-route="forms"><i class="icon-list"></i> Forms</a>
+      </li>
+      <li class="nav-header">Organization:</li>
+      <li id="menu-users">
+        <a data-route="users"><i class="icon-user"></i> Users</a>
+      </li>
+      <li id="menu-groups">
+        <a data-route="groups"><i class="icon-groups"></i> Groups</a>
+      </li>
+      <li id="menu-roles">
+        <a data-route="roles"><i class="icon-eye-close"></i> Roles</a>
+      </li>
+    </ul>
+  </div>
+</script>
+
+<script id="template-forms-page" type="text/html">
+  <div class="page-header has-actions">
+    <h2>Forms</h2>
+  </div>
+
+  <div class="page-actions clearfix">
+    <a href="forms-new.html" class="btn btn-small btn-primary pull-right"><i class="icon-plus icon-white"></i> Build new form</a>
+  </div>
+
+  <div id="form-list"></div>
+</script>
+
+<script id="template-collections-page" type="text/html">
+  <div class="page-header has-actions">
+    <h2>Collections</h2>
+  </div>
+
+  <div id="collection-list">
+  </div>
+</script>
+
+<script id="template-form-list-item" type="text/html">
+  <% if (active) { %>
+    <div class="x-entry x-entry-mini">
+      <div class="btn-toolbar pull-right">
+        <div class="btn-group">
+          <a href="forms-show.html" data-role="approve"  class="btn btn-small">Show</a>
+        </div>
+      </div>
+      <div class="x-entry-title">
+        <h3><a href="forms-show.html"><%= title %> (<%= reportCount %>)</a></h3>
+      </div>
+      <div class="x-entry-body">
+        <p><strong>Collections:</strong> <% print(_.map(collections, function (col) { return col["title"]; }).join(", ")); %></p>
+      </div>
+    </div>
+  <% } else { %>
+    <div class="x-entry x-entry-mini x-entry-disabled">
+      <div class="btn-toolbar pull-right">
+        <span class="badge">Inactive</span>
+      </div>
+      <div class="x-entry-title">
+        <h3><%= title %></h3>
+      </div>
+    </div>
+  <% } %>
+</script>
+
+{% endblock %}

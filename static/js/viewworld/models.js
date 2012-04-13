@@ -2,20 +2,20 @@
 (function(){
 
   var ViewWorld;
-  ViewWorld = this.ViewWorld = {};
+  ViewWorld = this.ViewWorld || (ViewWorld = this.ViewWorld = {});
 
   ViewWorld.Form = Backbone.Model.extend({
 
     urlRoot: '/forms',
 
     defaults: {
-      "title": "",
-      "owner": "",
-      "active": true,
-      "deletable": false,
-      "reportCount": 0,
-      "collections": [],
-      "fields": []
+      'title': '',
+      'owner': '',
+      'active': true,
+      'deletable': false,
+      'reportCount': 0,
+      'collections': [],
+      'fields': []
     },
 
     reports: function(models, options) {
@@ -57,8 +57,8 @@
   ViewWorld.Report = Backbone.Model.extend({
 
     defaults: {
-      "public": false,
-      "data": {}
+      'public': false,
+      'data': {}
     },
 
     initialize: function(attributes, options) {
@@ -100,11 +100,11 @@
     urlRoot: '/collections',
 
     defaults: {
-      "title": "",
-      "active": true,
-      "reportCount": 0,
-      "forms": [],
-      "objects": []
+      'title': '',
+      'active': true,
+      'reportCount': 0,
+      'forms': [],
+      'objects': []
     }
 
   });
@@ -117,9 +117,20 @@
     parse: function(response) {
       return response.collections;
     },
-    
+
     comparator: function(collection) {
       return collection.get('title');
+    }
+
+  });
+
+  ViewWorld.Menu = Backbone.Model.extend({
+
+    defaults: {
+      'current': '',
+      'inboxCount': 0,
+      'awaitingReviewCount': 3,
+      'awaitingReturnCount': 4
     }
 
   });

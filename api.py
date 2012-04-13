@@ -16,9 +16,10 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-@app.route('/test/forms')
-def test_forms():
-    return render_template('forms.html')
+@app.route('/test/app/')
+@app.route('/test/app/<path:page>')
+def test_app(page=None):
+    return render_template('selleo/app.html'.format(page))
 
 def error(msg, code=404):
     resp = jsonify(error=msg)
