@@ -4,7 +4,10 @@
   var ViewWorld;
   ViewWorld = this.ViewWorld || (ViewWorld = this.ViewWorld = {});
 
-  ViewWorld.Form = Backbone.Model.extend({
+  var Models;
+  ViewWorld.Models = Models = {};
+
+  Models.Form = Backbone.Model.extend({
 
     urlRoot: '/forms',
 
@@ -18,18 +21,18 @@
       'fields': []
     },
 
-    reports: function(models, options) {
+    initialize: function(options) {
       options || (options = {});
-      options.form = this;
-      return new ViewWorld.Reports(models, options);
+      var reports = options.reports || {};
+      this.reports = new Models.ReportSet(reports, {form: this});
     }
 
   });
 
-  ViewWorld.Forms = Backbone.Collection.extend({
+  Models.FormSet = Backbone.Collection.extend({
 
-    model: ViewWorld.Form,
-    url: ViewWorld.Form.prototype.urlRoot,
+    model: Models.Form,
+    url: Models.Form.prototype.urlRoot,
 
     parse: function(response) {
       return response.forms;
@@ -50,11 +53,11 @@
   });
 
   var reportUrl = function(formId) {
-      return [ViewWorld.Form.prototype.urlRoot,
+      return [Models.Form.prototype.urlRoot,
               encodeURIComponent(formId), 'reports'].join('/');
   };
 
-  ViewWorld.Report = Backbone.Model.extend({
+  Models.Report = Backbone.Model.extend({
 
     defaults: {
       'public': false,
@@ -70,9 +73,9 @@
 
   });
 
-  ViewWorld.Reports = Backbone.Collection.extend({
+  Models.ReportSet = Backbone.Collection.extend({
 
-    model: ViewWorld.Report,
+    model: Models.Report,
 
     initialize: function(models, options) {
       options || (options = {});
@@ -95,7 +98,7 @@
   });
 
 
-  ViewWorld.Collection = Backbone.Model.extend({
+  Models.Collection = Backbone.Model.extend({
 
     urlRoot: '/collections',
 
@@ -109,10 +112,10 @@
 
   });
 
-  ViewWorld.Collections = Backbone.Collection.extend({
+  Models.CollectionSet = Backbone.Collection.extend({
 
-    model: ViewWorld.Collection,
-    url: ViewWorld.Collection.prototype.urlRoot,
+    model: Models.Collection,
+    url: Models.Collection.prototype.urlRoot,
 
     parse: function(response) {
       return response.collections;
@@ -120,17 +123,6 @@
 
     comparator: function(collection) {
       return collection.get('title');
-    }
-
-  });
-
-  ViewWorld.Menu = Backbone.Model.extend({
-
-    defaults: {
-      'current': '',
-      'inboxCount': 0,
-      'awaitingReviewCount': 3,
-      'awaitingReturnCount': 4
     }
 
   });

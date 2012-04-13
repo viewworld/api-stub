@@ -10,33 +10,42 @@
       'collections': 'collections',
     },
 
-    pages: {
-      'forms': new ViewWorld.Views.FormsPage({el: '#main-column'}),
-      'collections': new ViewWorld.Views.CollectionsPage({el: '#main-column'}),
+    setup: function() {
+      this.createSubViews();
+      this.renderSubViews();
     },
 
-    initialize: function(options) {
-      if (options && options.menu) this.menu = options.menu;
+    createSubViews: function() {
+      this.menu = new ViewWorld.Views.Menu;
+      this.forms = new ViewWorld.Views.Forms;
+      this.collections = new ViewWorld.Views.Collections;
+    },
+
+    renderSubViews: function() {
+      this.menu.render();
     },
 
     forms: function() {
-      this.pages['forms'].go();
-      this.menu.set('current', 'forms');
+      this.forms.render();
     },
 
     collections: function() {
-      this.pages['collections'].go();
-      this.menu.set('current', 'collections');
+      this.collections.render();
     },
 
   });
 
+  ViewWorld.app = {};
+  ViewWorld.app.forms = new ViewWorld.Models.FormSet;
+  ViewWorld.app.collections = new ViewWorld.Models.CollectionSet;
+  ViewWorld.app.router = new ViewWorld.Router;
+
   $(function(){
-    menu = new ViewWorld.Menu();
-    var menuview = new ViewWorld.Views.Menu({el: '#menu', model: menu});
-    menuview.render();
-    ViewWorld.router = new ViewWorld.Router({'menu': menu});
-    Backbone.history.start({pushState: true, root: '/test/app/'});
+    ViewWorld.app.router.setup();
+    Backbone.history.start({
+      pushState: true,
+      root: '/test/app/'
+    }) || ViewWorld.app.router.navigate('forms', {trigger: true});
   });
 
 }).call(this);

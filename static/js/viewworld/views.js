@@ -1,8 +1,9 @@
 (function(){
 
-  var ViewWorld, Views;
+  var ViewWorld;
   ViewWorld = this.ViewWorld || (ViewWorld = this.ViewWorld = {});
 
+  var Views;
   ViewWorld.Views = Views = {};
 
   Views.Breadcrumb = Backbone.View.extend({
@@ -21,6 +22,7 @@
 
   Views.Menu = Backbone.View.extend({
 
+    el: '#menu',
     template: _.template($('#template-menu').html()),
 
     events: {
@@ -28,20 +30,34 @@
     },
 
     initialize: function() {
-      this.model.bind('change', this.render, this);
+      Backbone.history.bind('route', this.updateActive, this);
+      this.active = null;
+    },
+
+    template_data: function() {
+      return {
+        'inboxCount': 0,
+        'awaitingReviewCount': 0,
+        'awaitingReturnCount': 0
+      };
     },
 
     render: function() {
-      this.$el.html(this.template(this.model.toJSON()));
+      this.$el.html(this.template(this.template_data()));
       this.$('li').removeClass('active');
-      if (this.model.get('current'))
-        this.$('li#menu-'+this.model.get('current')).addClass('active');
+      if (this.active)
+        this.$('li#menu-'+this.active).addClass('active');
       return this;
+    },
+
+    updateActive: function(history, name) {
+      this.active = name;
+      this.render();
     },
 
     goto: function(event) {
       var route = $(event.target).data('route');
-      ViewWorld.router.navigate(route, {trigger: true});
+      ViewWorld.app.router.navigate(route, {trigger: true});
     }
 
   });
@@ -86,37 +102,27 @@
 
   });
 
+  Views.Forms = Backbone.View.extend({
 
-  var Page = Backbone.View.extend({
-
-    go: function() {
-      this.render();
-    }
-
-  });
-
-  Views.FormsPage = Page.extend({
-
-    tagName: 'div',
+    el: '#main-column',
     template: _.template($('#template-forms-page').html()),
 
     render: function() {
       this.$el.html(this.template({}));
-      var forms = new ViewWorld.Forms();
       var formList = new Views.FormList({
         el: '#form-list',
-        model: forms,
+        model: ViewWorld.app.forms,
       });
-      forms.fetch();
+      ViewWorld.app.forms.fetch();
 
       return this;
     },
 
   });
 
-  Views.CollectionsPage = Page.extend({
+  Views.Collections = Backbone.View.extend({
 
-    tagName: 'div',
+    el: '#main-column',
     template: _.template($('#template-collections-page').html()),
 
     render: function() {
