@@ -126,8 +126,21 @@
       return response.collections;
     },
 
-    comparator: function(collection) {
-      return collection.get('title');
+    comparator: function(col1, col2) {
+      if (col1.get('active') !== col2.get('active')) {
+        return col1.get('active') ? -1 : 1;
+      } else {
+        return col1.get('title').toLocaleLowerCase().localeCompare(
+          col2.get('title').toLocaleLowerCase());
+      }
+    },
+
+    active: function() {
+      return this.filter(function(form) { return form.get('active'); });
+    },
+
+    inactive: function() {
+      return this.without.apply(this, this.done());
     }
 
   });

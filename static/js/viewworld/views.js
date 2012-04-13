@@ -84,8 +84,6 @@
     tagName: 'div',
     className: 'form-list',
 
-    template: _.template($('#template-form-list-item').html()),
-
     initialize: function() {
       this.model.bind('add', this.addForm, this);
       this.model.bind('reset', this.addAllForms, this);
@@ -98,6 +96,52 @@
 
     addAllForms: function() {
       this.model.each(this.addForm, this);
+    },
+
+  });
+
+  var CollectionListItemView = Backbone.View.extend({
+
+    tagName: 'div',
+    template: _.template($('#template-collection-list-item').html()),
+
+    events: {
+      'click .btn[data-role=toggle]': 'toggle'
+    },
+
+    initialize: function(options) {
+      this.model.bind('change', this.render, this);
+      this.model.bind('destroy', this.remove, this);
+    },
+
+    render: function() {
+      this.$el.html(this.template(this.model.toJSON()));
+      return this;
+    },
+
+    toggle: function(event) {
+      this.$('.btn[data-role=toggle]').toggleClass('active');
+      this.$('.x-entry-body').slideToggle();
+    }
+
+  });
+
+  Views.CollectionList = Backbone.View.extend({
+
+    tagName: 'div',
+
+    initialize: function(options) {
+      this.model.bind('add', this.addOne, this);
+      this.model.bind('reset', this.addAll, this);
+    },
+
+    addOne: function(item) {
+      var view = new CollectionListItemView({model: item});
+      this.$el.append(view.render().el);
+    },
+
+    addAll: function() {
+      this.model.each(this.addOne, this);
     },
 
   });
@@ -127,6 +171,12 @@
 
     render: function() {
       this.$el.html(this.template({}));
+      new Views.CollectionList({
+        el: '#collection-list',
+        model: ViewWorld.app.collections
+      });
+
+      ViewWorld.app.collections.fetch();
       return this;
     }
 
