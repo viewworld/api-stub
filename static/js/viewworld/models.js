@@ -38,8 +38,13 @@
       return response.forms;
     },
 
-    comparator: function(form) {
-      return form.get('title');
+    comparator: function(form1, form2) {
+      if (form1.get('active') !== form2.get('active')) {
+        return form1.get('active') ? -1 : 1;
+      } else {
+        return form1.get('title').toLocaleLowerCase().localeCompare(
+          form2.get('title').toLocaleLowerCase());
+      }
     },
 
     active: function() {
