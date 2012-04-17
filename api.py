@@ -1,5 +1,6 @@
 # coding=utf-8
 
+import os
 import json
 import testdata
 
@@ -7,6 +8,7 @@ from flask import (
     Flask,
     abort,
     jsonify,
+    make_response,
     render_template,
     request,
 )
@@ -26,6 +28,17 @@ def error(msg, code=404):
     resp.status_code = code
     return resp
 
+@app.route('/jst')
+def jst():
+    templates = {}
+    for root, dirs, files in os.walk('templates/jst'):
+        for file in (f for f in files if f.endswith('.html')):
+            with open(os.path.join(root, file)) as fp:
+                key = os.path.join(root[14:], os.path.splitext(file)[0])
+                templates[key] = json.dumps(fp.read())
+    resp = make_response(render_template('jst.js', templates=templates))
+    resp.headers['Content-type'] = 'application/javascript'
+    return resp
 
 @app.route('/forms',
            methods=['GET', 'POST', 'DELETE'])

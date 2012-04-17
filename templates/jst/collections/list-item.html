@@ -1,0 +1,29 @@
+<% if (active) { %>
+  <div class="x-entry x-entry-mini">
+    <div class="btn-toolbar pull-right">
+      <div class="btn-group">
+        <a href="#" data-role="toggle"  class="btn btn-small"><i class="icon-align-justify"></i></a>
+        <a href="collections-object.html" data-role="approve"  class="btn btn-small">Show</a>
+      </div>
+    </div>
+    <div class="x-entry-title">
+      <h3><a href="#"><%= title %> (<%= reportCount %>)</a></h3>
+    </div>
+    <div class="x-entry-body" style="display:none">
+      <ul>
+        <% _.each(forms, function(form) { %>
+          <li><a href="#"><%= form.title %> (<%= form.reportCount %>)</a></li>
+        <% }); %>
+      </ul>
+    </div>
+  </div>
+<% } else { %>
+  <div class="x-entry x-entry-mini x-entry-disabled">
+    <div class="btn-toolbar pull-right">
+      <span class="badge">Inactive</span>
+    </div>
+    <div class="x-entry-title">
+      <h3>Bio-monitoring (0)</h3>
+    </div>
+  </div>
+<% } %>

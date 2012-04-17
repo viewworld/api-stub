@@ -1,0 +1,24 @@
+<% if (active) { %>
+  <div class="x-entry x-entry-mini">
+    <div class="btn-toolbar pull-right">
+      <div class="btn-group">
+        <a href="/test/app/forms/<%= id %>" data-role="approve"  class="btn btn-small">Show</a>
+      </div>
+    </div>
+    <div class="x-entry-title">
+      <h3><a href="/test/app/forms/<%= id %>"><%= title %> (<%= reportCount %>)</a></h3>
+    </div>
+    <div class="x-entry-body">
+      <p><strong>Collections:</strong> <% print(_.map(collections, function (col) { return col["title"]; }).join(", ")); %></p>
+    </div>
+  </div>
+<% } else { %>
+  <div class="x-entry x-entry-mini x-entry-disabled">
+    <div class="btn-toolbar pull-right">
+      <span class="badge">Inactive</span>
+    </div>
+    <div class="x-entry-title">
+      <h3><%= title %></h3>
+    </div>
+  </div>
+<% } %>

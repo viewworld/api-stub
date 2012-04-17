@@ -10,7 +10,7 @@
 
     tagName: 'ul',
     className: 'breadcrumb',
-    template: _.template($('#template-breadcrumb').html()),
+    template: JST['breadcrumb'],
 
     render: function() {
       this.$el.html(this.template(this.model.toJSON()));
@@ -23,7 +23,7 @@
   Views.Menu = Backbone.View.extend({
 
     el: '#menu',
-    template: _.template($('#template-menu').html()),
+    template: JST['menu'],
 
     events: {
       'click li a': 'goto'
@@ -65,7 +65,7 @@
   var FormListItemView = Backbone.View.extend({
 
     tagName: 'div',
-    template: _.template($('#template-form-list-item').html()),
+    template: JST['forms/list-item'],
 
     initialize: function() {
       this.model.bind('change', this.render, this);
@@ -103,7 +103,7 @@
   var CollectionListItemView = Backbone.View.extend({
 
     tagName: 'div',
-    template: _.template($('#template-collection-list-item').html()),
+    template: JST['collections/list-item'],
 
     events: {
       'click .btn[data-role=toggle]': 'toggle'
@@ -149,7 +149,7 @@
   Views.Forms = Backbone.View.extend({
 
     el: '#main-column',
-    template: _.template($('#template-forms-page').html()),
+    template: JST['forms/page'],
 
     render: function() {
       this.$el.html(this.template({}));
@@ -167,7 +167,7 @@
   Views.Collections = Backbone.View.extend({
 
     el: '#main-column',
-    template: _.template($('#template-collections-page').html()),
+    template: JST['collections/page'],
 
     render: function() {
       this.$el.html(this.template({}));

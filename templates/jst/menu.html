@@ -1,0 +1,34 @@
+<div class="well subnav" style="padding: 8px 0;">
+  <ul class="nav nav-list">
+    <li class="nav-header">Inbox:</li>
+    <li id="menu-inbox">
+      <a data-route="inbox"><i class="icon-inbox"></i> All</a>
+      <span class="badge"><%= inboxCount %></span>
+    </li>
+    <li id="menu-inbox-review">
+      <a data-route="inbox/review"><i class="icon-time"></i> Awaiting review</a>
+      <span class="badge"><%= awaitingReviewCount %></span>
+    </li>
+    <li id="menu-inbox-returns">
+      <a data-route="inbox/returns"><i class="icon-time"></i> Awaiting returns </a>
+      <span class="badge"><%= awaitingReturnCount %></span>
+    </li>
+    <li class="nav-header">Manage:</li>
+    <li id="menu-collections">
+      <a data-route="collections"><i class="icon-folder-open"></i> Collections</a>
+    </li>
+    <li id="menu-forms">
+      <a data-route="forms"><i class="icon-list"></i> Forms</a>
+    </li>
+    <li class="nav-header">Organization:</li>
+    <li id="menu-users">
+      <a data-route="users"><i class="icon-user"></i> Users</a>
+    </li>
+    <li id="menu-groups">
+      <a data-route="groups"><i class="icon-groups"></i> Groups</a>
+    </li>
+    <li id="menu-roles">
+      <a data-route="roles"><i class="icon-eye-close"></i> Roles</a>
+    </li>
+  </ul>
+</div>

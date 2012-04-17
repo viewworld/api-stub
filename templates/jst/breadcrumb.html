@@ -1,0 +1,4 @@
+<% _.each(_.initial(pages), function(page) { %>
+  <li><a href="<%= page.href %>"><%= page.title %></a> <span class="divider">/</span> </li>
+<% }); %>
+<li class="active"><%= _.last(pages).title %></li>
