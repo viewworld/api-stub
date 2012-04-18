@@ -198,8 +198,8 @@
 
     templates: {
       'number': _.template('<%= value %>'),
-      'string': _.template('<%= value %>'),
-      'object': _.template('object')
+      'text': _.template('<%= value %>'),
+      'object': _.template('<%= field.title %> object')
     },
 
     initialize: function(options) {
@@ -214,7 +214,10 @@
       _.each(this.fields, function(field) {
         var value = data[field.id];
         var td = $('<td>');
-        td.html(this.templates[field.type]({value: value}));
+        td.html(this.templates[field.type]({
+          value: value,
+          field: field
+        }));
         this.$el.append(td);
       }, this);
       return this;
