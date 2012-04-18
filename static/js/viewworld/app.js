@@ -7,6 +7,7 @@
 
     routes: {
       'forms': 'forms',
+      'forms/:form': 'form',
       'collections': 'collections',
     },
 
@@ -27,6 +28,12 @@
 
     forms: function() {
       this.forms.render();
+    },
+
+    form: function(formId) {
+      var form = new ViewWorld.Models.Form({id: formId});
+      var view = new ViewWorld.Views.Form({model: form});
+      form.fetch();
     },
 
     collections: function() {

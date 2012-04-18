@@ -67,6 +67,11 @@
     tagName: 'div',
     template: JST['forms/list-item'],
 
+    events: {
+      'click .btn[data-role=approve]': 'show',
+      'click h3 a': 'show'
+    },
+
     initialize: function() {
       this.model.bind('change', this.render, this);
       this.model.bind('destroy', this.remove, this);
@@ -75,6 +80,11 @@
     render: function() {
       this.$el.html(this.template(this.model.toJSON()));
       return this;
+    },
+
+    show: function(event) {
+      ViewWorld.app.router.navigate('forms/'+this.model.id, {trigger: true});
+      event.preventDefault();
     }
 
   });
@@ -96,7 +106,7 @@
 
     addAllForms: function() {
       this.model.each(this.addForm, this);
-    },
+    }
 
   });
 
@@ -182,6 +192,65 @@
 
   });
 
+  Views.ReportRow = Backbone.View.extend({
+
+    tagName: 'tr',
+
+    templates: {
+      'number': _.template('<%= value %>'),
+      'string': _.template('<%= value %>'),
+      'object': _.template('object')
+    },
+
+    initialize: function(options) {
+      if (options && options.fields)
+        this.fields = options.fields;
+      else
+        this.fields = [];
+    },
+
+    render: function() {
+      var data = this.model.get('data');
+      _.each(this.fields, function(field) {
+        var value = data[field.id];
+        var td = $('<td>');
+        td.html(this.templates[field.type]({value: value}));
+        this.$el.append(td);
+      }, this);
+      return this;
+    }
+
+  });
+
+  Views.Form = Backbone.View.extend({
+
+    el: '#main-column',
+    template: JST['form/page'],
+
+    initialize: function() {
+      this.model.bind('change', this.render, this);
+      this.reports = this.model.reports;
+      this.reports.bind('reset', this.renderReports, this);
+    },
+
+    render: function() {
+      this.$el.html(this.template(this.model.toJSON()));
+      this.reports.fetch();
+      return this;
+    },
+
+    renderReports: function() {
+      var tbody = this.$('table tbody');
+      this.reports.each(function(report) {
+        var rows = new Views.ReportRow({
+          model: report,
+          fields: this.model.get('fields')
+        });
+        tbody.append(rows.render().el);
+      }, this);
+    }
+
+  });
 
 }).call(this);
 
