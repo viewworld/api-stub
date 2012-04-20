@@ -9,6 +9,7 @@
       'forms': 'forms',
       'forms/:form': 'form',
       'collections': 'collections',
+      'collections/:collection': 'collection',
     },
 
     setup: function() {
@@ -38,6 +39,12 @@
 
     collections: function() {
       this.collections.render();
+    },
+
+    collection: function(collectionId) {
+      var collection = new ViewWorld.Models.Collection({id: collectionId});
+      var view = new ViewWorld.Views.Collection({model: collection});
+      collection.fetch();
     },
 
   });

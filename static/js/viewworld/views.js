@@ -31,7 +31,7 @@
 
     initialize: function() {
       Backbone.history.bind('route', this.updateActive, this);
-      this.active = null;
+      this.activeItem = null;
     },
 
     template_data: function() {
@@ -45,13 +45,13 @@
     render: function() {
       this.$el.html(this.template(this.template_data()));
       this.$('li').removeClass('active');
-      if (this.active)
-        this.$('li#menu-'+this.active).addClass('active');
+      if (this.activeItem)
+        this.$('li#menu-'+this.activeItem).addClass('active');
       return this;
     },
 
     updateActive: function(history, name) {
-      this.active = name;
+      this.activeItem = name;
       this.render();
     },
 
@@ -116,7 +116,10 @@
     template: JST['collections/list-item'],
 
     events: {
-      'click .btn[data-role=toggle]': 'toggle'
+      'click .btn[data-role=toggle]': 'toggle',
+      'click .btn[data-role=approve]': 'show',
+      'click h3 a' : 'show',
+      'click li a' : 'showForm',
     },
 
     initialize: function(options) {
@@ -132,6 +135,17 @@
     toggle: function(event) {
       this.$('.btn[data-role=toggle]').toggleClass('active');
       this.$('.x-entry-body').slideToggle();
+    },
+
+    show: function(event) {
+      ViewWorld.app.router.navigate('collections/'+this.model.id, {trigger: true});
+      event.preventDefault();
+    },
+
+    showForm: function(event) {
+      var formId = $(event.target).data('id');
+      ViewWorld.app.router.navigate('forms/'+formId, {trigger: true});
+      event.preventDefault();
     }
 
   });
@@ -249,6 +263,23 @@
         tbody.append(rows.render().el);
       }, this);
     }
+
+  });
+
+  Views.Collection = Backbone.View.extend({
+
+    el: '#main-column',
+    template: JST['collection/page'],
+
+    initialize: function() {
+      this.model.bind('change', this.render, this);
+      this.objects = this.model.objects;
+    },
+
+    render: function() {
+      this.$el.html(this.template(this.model.toJSON()));
+      return this;
+    },
 
   });
 
