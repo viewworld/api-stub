@@ -11,9 +11,13 @@
       'collections': 'collections',
     },
 
-    setup: function() {
+    initialize: function() {
       this.createSubViews();
       this.renderSubViews();
+      Backbone.history.start({
+        pushState: true,
+        root: '/test/app/'
+      }) || this.navigate('forms', {trigger: true});
     },
 
     createSubViews: function() {
@@ -45,15 +49,6 @@
   ViewWorld.app = {};
   ViewWorld.app.forms = new ViewWorld.Models.FormSet;
   ViewWorld.app.collections = new ViewWorld.Models.CollectionSet;
-  ViewWorld.app.router = new ViewWorld.Router;
-
-  $(function(){
-    ViewWorld.app.router.setup();
-    Backbone.history.start({
-      pushState: true,
-      root: '/test/app/'
-    }) || ViewWorld.app.router.navigate('forms', {trigger: true});
-  });
 
 }).call(this);
 

@@ -21,3 +21,11 @@
         </div>
     </div>
 {% endblock %}
+
+{% block scripts %}
+<script>
+  $(function(){
+    ViewWorld.app.router = new ViewWorld.Router;
+  });
+</script>
+{% endblock %}
