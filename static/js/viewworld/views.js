@@ -255,6 +255,116 @@
 
   });
 
+  Views.GroupsView = Backbone.View.extend({
+
+    el: '#main-column',
+    template: JST['groups/page'],
+
+    events: {
+     'click .select-all': 'selectAll',
+     'click .delete-selected': 'deleteSelected'
+    },
+
+    selectAll: function(){
+      this.$el.find('input').attr('checked', true);
+    },
+
+    deleteSelected: function(){
+      $.each(this.$el.find('input:checked'), function(){
+        ViewWorld.app.groupTree.groups.get($(this).data('id')).destroy({wait: true});
+      });
+    },
+
+    render: function(){
+      this.$el.html(this.template);
+      this.groupTreeView = new ViewWorld.Views.GroupTreeView;
+      this.groupTreeView.groupTree.groups.fetch();
+      return this;
+    }
+
+  }),
+
+  Views.GroupView = Backbone.View.extend({
+
+    tagName: 'tr',
+    template: JST['groups/group'],
+
+    events: {
+      'click .delete': 'delete',
+      'click a.edit': 'edit'
+    },
+
+    initialize: function(options){
+      this.model.set("level", options.group.level)
+    },
+
+    delete: function(){
+      this.model.destroy({wait: true});
+    },
+
+    edit: function(event){
+      var route = $(event.target).closest('a').data('route');
+      ViewWorld.app.router.navigate(route, {trigger: true});
+    },
+
+    render: function(){
+      this.$el.html(this.template(this.model.toJSON()));
+      return this;
+    }
+
+  })
+
+  Views.GroupTreeView = Backbone.View.extend({
+
+    el: '#group-tree',
+
+    initialize: function(){
+      this.groupTree = ViewWorld.app.groupTree;
+      this.groupTree.bind('rebuilt', this.render, this);
+    },
+
+    renderTree: function(groups){
+      if ((typeof groups == 'undefined')||(groups == null)) return null;
+      for(var i=0; i<groups.length; i++){
+        var group = new ViewWorld.Views.GroupView({group: groups[i], model: groups[i].item});
+        group.render();
+        this.$el.append(group.el);
+        this.renderTree(groups[i].children);
+      };
+    },
+
+    render: function(){
+      this.$el.html('');
+      this.renderTree(this.groupTree.tree);
+      return this;
+    }
+
+  }),
+
+  Views.GroupFormView = Backbone.View.extend({
+
+    el: '#main-column',
+    template: JST['groups/form'],
+
+    events: {
+      'click .cancel': 'cancel'
+    },
+
+    initialize: function(){
+      this.model.bind('change', this.render, this);
+    },
+
+    cancel: function(event){
+      ViewWorld.app.router.navigate($(event.target).data('route'), {trigger: true})
+    },
+
+    render: function(){
+      this.$el.html(this.template(this.model.toJSON()));
+      return this;
+    }
+
+  })
+
 }).call(this);
 
 /* vi: set sw=2 ts=2: */

@@ -9,6 +9,8 @@
       'forms': 'forms',
       'forms/:form': 'form',
       'collections': 'collections',
+      'groups': 'groups',
+      'groups/:id/edit': 'editGroup'
     },
 
     initialize: function() {
@@ -24,6 +26,7 @@
       this.menu = new ViewWorld.Views.Menu;
       this.forms = new ViewWorld.Views.Forms;
       this.collections = new ViewWorld.Views.Collections;
+      this.groups = new ViewWorld.Views.GroupsView;
     },
 
     renderSubViews: function() {
@@ -44,11 +47,21 @@
       this.collections.render();
     },
 
+    groups: function() {
+      this.groups.render();
+    },
+
+    editGroup: function(id) {
+      form = new ViewWorld.Views.GroupFormView({model: new ViewWorld.Models.Group({id:id, parse: false})});
+      form.model.fetch();
+    }
+
   });
 
   ViewWorld.app = {};
   ViewWorld.app.forms = new ViewWorld.Models.FormSet;
   ViewWorld.app.collections = new ViewWorld.Models.CollectionSet;
+  ViewWorld.app.groupTree = new ViewWorld.Models.GroupTree;
 
 }).call(this);
 

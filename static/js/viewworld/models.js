@@ -145,6 +145,59 @@
 
   });
 
+  Models.Group = Backbone.Model.extend({
+
+    urlRoot: '/groups',
+
+    parse: function(response) {
+      if (response.group) {
+        return response.group;
+      } else {
+        return response;
+      }
+    }
+
+  }),
+
+  Models.Groups = Backbone.Collection.extend({
+
+    model: Models.Group,
+    url: Models.Group.prototype.urlRoot,
+
+    parse: function(response) {
+      return response.groups;
+    }
+
+  }),
+
+  Models.GroupTree = Backbone.Model.extend({
+
+    initialize: function(){
+      this.groups = new ViewWorld.Models.Groups;
+      this.groups.bind('reset add remove', this.rebuildTree, this);
+    },
+
+    buildTree: function(branch, list, level) {
+      if (typeof branch == 'undefined') return null;
+      if (level == undefined) { level = 1}
+      var tree = [];
+      for(var i=0; i<branch.length; i++)
+        tree.push( {
+          item: branch[i],
+          children: this.buildTree(list[branch[i].id ], list, level+1),
+          level: level
+        });
+      return tree;
+    },
+
+    rebuildTree: function() {
+      this.grouped = this.groups.groupBy(function(group){return group.get('parentId')});
+      this.tree = this.buildTree(this.grouped[0], this.grouped);
+      this.trigger('rebuilt');
+    }
+
+  })
+
 }).call(this);
 
 /* vi: set sw=2 ts=2: */

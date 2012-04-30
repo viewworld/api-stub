@@ -1,0 +1,37 @@
+<div class="page-header has-actions">
+    <h2>New group</h2>
+</div>
+
+<div class="page-actions">
+    <a href="#" class="btn btn-small btn-danger"><i class="icon-remove icon-white"></i> Delete group</a>
+</div>
+
+<form class="form-horizontal">
+  <fieldset>
+
+      <div class="control-group">
+          <label class="control-label">Name:</label>
+          <div class="controls">
+              <input type="text" class="input-large" value="<%= name %>"/>
+          </div>
+      </div>
+
+      <div class="control-group">
+          <label class="control-label">Type:</label>
+          <div class="controls">
+              <select>
+                  <option>-- select --</option>
+                  <option>option 1</option>
+                  <option>option 2</option>
+                  <option>option 3</option>
+              </select>
+          </div>
+      </div>
+
+      <div class="form-actions">
+          <a href="#" class="btn btn-primary save"><i class="icon-ok icon-white"></i> Save</a>
+          <a class="btn cancel" data-route="groups">Cancel</a>
+      </div>
+
+  </fieldset>
+</form>
