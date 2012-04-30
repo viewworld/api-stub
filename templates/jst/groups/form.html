@@ -3,7 +3,9 @@
 </div>
 
 <div class="page-actions">
-    <a href="#" class="btn btn-small btn-danger"><i class="icon-remove icon-white"></i> Delete group</a>
+    <% if (id) { %>
+        <a class="btn btn-small btn-danger delete"><i class="icon-remove icon-white"></i> Delete group</a>
+    <% } %>
 </div>
 
 <form class="form-horizontal">
@@ -12,14 +14,14 @@
       <div class="control-group">
           <label class="control-label">Name:</label>
           <div class="controls">
-              <input type="text" class="input-large" value="<%= name %>"/>
+              <input type="text" class="input-large" name="name" value="<%= name %>"/>
           </div>
       </div>
 
       <div class="control-group">
           <label class="control-label">Type:</label>
           <div class="controls">
-              <select>
+              <select name="type">
                   <option>-- select --</option>
                   <option>option 1</option>
                   <option>option 2</option>
@@ -29,7 +31,7 @@
       </div>
 
       <div class="form-actions">
-          <a href="#" class="btn btn-primary save"><i class="icon-ok icon-white"></i> Save</a>
+          <a class="btn btn-primary save"><i class="icon-ok icon-white"></i> Save</a>
           <a class="btn cancel" data-route="groups">Cancel</a>
       </div>
 

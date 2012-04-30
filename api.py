@@ -125,7 +125,7 @@ def groups():
         return jsonify(groups=testdata.groups['list'])
     elif request.method == 'POST':
         resp = jsonify(**request.json)
-        resp.status_code = 201
+        resp.status_code = 200
         return resp
 
 @app.route('/groups/<groupid>',
@@ -137,6 +137,10 @@ def group(groupid):
         return jsonify(group=testdata.groups['list'][int(groupid)-1])
     elif request.method == 'DELETE':
         return '', 200
+    elif request.method == 'PUT':
+        resp = jsonify(**request.json)
+        resp.status_code = 200
+        return resp
 
 def ids(object):
     return object['id']

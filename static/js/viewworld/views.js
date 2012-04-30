@@ -257,22 +257,34 @@
 
   Views.GroupsView = Backbone.View.extend({
 
-    el: '#main-column',
     template: JST['groups/page'],
 
     events: {
      'click .select-all': 'selectAll',
-     'click .delete-selected': 'deleteSelected'
+     'click .delete-selected': 'deleteSelected',
+     'click .new-group': 'newGroup'
+    },
+
+    initialize: function(){
+      this.collection.bind('reset', this.render, this)
     },
 
     selectAll: function(){
-      this.$el.find('input').attr('checked', true);
+      if (this.$el.find('input:not(:checked)').length > 0) {
+        this.$el.find('input').attr('checked', true);
+      } else {
+        this.$el.find('input').attr('checked', false);
+      }
     },
 
     deleteSelected: function(){
       $.each(this.$el.find('input:checked'), function(){
         ViewWorld.app.groupTree.groups.get($(this).data('id')).destroy({wait: true});
       });
+    },
+
+    newGroup: function(){
+      ViewWorld.app.router.navigate('groups/new', {trigger: true})
     },
 
     render: function(){
@@ -343,11 +355,12 @@
 
   Views.GroupFormView = Backbone.View.extend({
 
-    el: '#main-column',
     template: JST['groups/form'],
 
     events: {
-      'click .cancel': 'cancel'
+      'click .cancel': 'cancel',
+      'click .delete': 'delete',
+      'click .save': 'save'
     },
 
     initialize: function(){
@@ -356,6 +369,33 @@
 
     cancel: function(event){
       ViewWorld.app.router.navigate($(event.target).data('route'), {trigger: true})
+    },
+
+    delete: function(){
+      this.model.destroy(
+          {
+              wait: true,
+              success: function(model, response){
+                  ViewWorld.app.router.navigate('groups', {trigger: true})
+              }
+          }
+      );
+    },
+
+    save: function(){
+      var data = {};
+      this.$el.find('input,select').each(function(){
+        data[$(this).attr('name')] = $(this).attr('value');
+      });
+      this.model.save(
+          data,
+          {
+              wait: true,
+              success: function(model, reposnse){
+                ViewWorld.app.router.navigate('groups', {trigger: true})
+              }
+          }
+      );
     },
 
     render: function(){

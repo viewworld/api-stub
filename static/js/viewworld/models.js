@@ -149,6 +149,11 @@
 
     urlRoot: '/groups',
 
+    defaults: {
+      id: null,
+      name: ''
+    },
+
     parse: function(response) {
       if (response.group) {
         return response.group;
