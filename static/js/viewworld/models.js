@@ -178,8 +178,7 @@
   Models.GroupTree = Backbone.Model.extend({
 
     initialize: function(){
-      this.groups = new ViewWorld.Models.Groups;
-      this.groups.bind('reset add remove', this.rebuildTree, this);
+      ViewWorld.app.groups.bind('reset add remove', this.rebuildTree, this);
     },
 
     buildTree: function(branch, list, level) {
@@ -196,7 +195,7 @@
     },
 
     rebuildTree: function() {
-      this.grouped = this.groups.groupBy(function(group){return group.get('parentId')});
+      this.grouped = ViewWorld.app.groups.groupBy(function(group){return group.get('parentId')});
       this.tree = this.buildTree(this.grouped[0], this.grouped);
       this.trigger('rebuilt');
     }

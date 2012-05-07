@@ -19,10 +19,22 @@
 
   });
 
+  Views.Template = Backbone.View.extend({
+    el: '#content',
+
+    initialize: function(options) {
+      this.template = JST[options.template];
+    },
+
+    render: function() {
+      this.$el.html(this.template());
+      return this;
+    }
+
+  }),
 
   Views.Menu = Backbone.View.extend({
 
-    el: '#menu',
     template: JST['menu'],
 
     events: {
@@ -265,10 +277,6 @@
      'click .new-group': 'newGroup'
     },
 
-    initialize: function(){
-      this.collection.bind('reset', this.render, this)
-    },
-
     selectAll: function(){
       if (this.$el.find('input:not(:checked)').length > 0) {
         this.$el.find('input').attr('checked', true);
@@ -278,8 +286,8 @@
     },
 
     deleteSelected: function(){
-      $.each(this.$el.find('input:checked'), function(){
-        ViewWorld.app.groupTree.groups.get($(this).data('id')).destroy({wait: true});
+      _.each(this.$el.find('input:checked'), function(group){
+        ViewWorld.app.groups.get($(group).data('id')).destroy({wait: true});
       });
     },
 
@@ -289,8 +297,33 @@
 
     render: function(){
       this.$el.html(this.template);
-      this.groupTreeView = new ViewWorld.Views.GroupTreeView;
-      this.groupTreeView.groupTree.groups.fetch();
+      this.groupTreeView = new ViewWorld.Views.GroupTreeView({el: this.$("#group-tree")});
+      ViewWorld.app.groups.fetch();
+      return this;
+    }
+
+  }),
+
+  Views.GroupTreeView = Backbone.View.extend({
+
+    initialize: function(){
+      this.groupTree = ViewWorld.app.groupTree;
+      this.groupTree.bind('rebuilt', this.render, this);
+    },
+
+    renderTree: function(groups){
+      if ((typeof groups == 'undefined')||(groups == null)) return null;
+      for(var i=0; i<groups.length; i++){
+        var group = new ViewWorld.Views.GroupView({group: groups[i], model: groups[i].item});
+        group.render();
+        this.$el.append(group.el);
+        this.renderTree(groups[i].children);
+      };
+    },
+
+    render: function(){
+      this.$el.html('');
+      this.renderTree(this.groupTree.tree);
       return this;
     }
 
@@ -321,33 +354,6 @@
 
     render: function(){
       this.$el.html(this.template(this.model.toJSON()));
-      return this;
-    }
-
-  })
-
-  Views.GroupTreeView = Backbone.View.extend({
-
-    el: '#group-tree',
-
-    initialize: function(){
-      this.groupTree = ViewWorld.app.groupTree;
-      this.groupTree.bind('rebuilt', this.render, this);
-    },
-
-    renderTree: function(groups){
-      if ((typeof groups == 'undefined')||(groups == null)) return null;
-      for(var i=0; i<groups.length; i++){
-        var group = new ViewWorld.Views.GroupView({group: groups[i], model: groups[i].item});
-        group.render();
-        this.$el.append(group.el);
-        this.renderTree(groups[i].children);
-      };
-    },
-
-    render: function(){
-      this.$el.html('');
-      this.renderTree(this.groupTree.tree);
       return this;
     }
 
