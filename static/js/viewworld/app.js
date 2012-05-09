@@ -11,7 +11,10 @@
       'collections': 'collections',
       'groups': 'groups',
       'groups/:id/edit': 'editGroup',
-      'groups/new': 'newGroup'
+      'groups/:id/users': 'groupUsers',
+      'groups/new': 'newGroup',
+      'users': 'users',
+      'users/new': 'newUser'
     },
 
     initialize: function() {
@@ -59,14 +62,28 @@
 
     editGroup: function(id) {
       this.renderTemplate({sidebar:false});
-      form = new ViewWorld.Views.GroupFormView({model: new ViewWorld.Models.Group({id:id, parse: false})});
+      form = new ViewWorld.Views.GroupFormView({model: new ViewWorld.Models.Group({ id: id })});
       form.model.fetch();
       $('#main-column').html(form.$el);
     },
 
     newGroup: function() {
       this.renderTemplate({sidebar:false});
-      form = new ViewWorld.Views.GroupFormView({model: new ViewWorld.Models.Group({parse: false})});
+      form = new ViewWorld.Views.GroupFormView({model: new ViewWorld.Models.Group()});
+      form.render();
+      $('#main-column').html(form.$el);
+    },
+
+    users: function() {
+      this.renderTemplate({sidebar:false});
+      tree = new ViewWorld.Views.UsersView;
+      tree.render();
+      $('#main-column').html(tree.$el);
+    },
+
+    newUser: function() {
+      this.renderTemplate({sidebar:false});
+      form = new ViewWorld.Views.UserFormView({model: new ViewWorld.Models.User()});
       form.render();
       $('#main-column').html(form.$el);
     }

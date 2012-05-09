@@ -362,5 +362,19 @@ groups = {
     ]
 }
 
+users = {
+    "list": [
+        {
+            "id": 1,
+            "login": 'john_doe',
+            "role": 'Field Officer',
+            "firstName": 'John',
+            "lastName": 'Doe',
+            "email": 'john@doe.com',
+            "groupId": 1
+        }
+    ]
+}
+
 
 

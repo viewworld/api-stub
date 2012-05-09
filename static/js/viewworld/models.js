@@ -154,6 +154,11 @@
       name: ''
     },
 
+    initialize: function(){
+      this.users = new Models.Users;
+      this.users.url = '/groups/' + this.id + '/users';
+    },
+
     parse: function(response) {
       if (response.group) {
         return response.group;
@@ -198,6 +203,39 @@
       this.grouped = ViewWorld.app.groups.groupBy(function(group){return group.get('parentId')});
       this.tree = this.buildTree(this.grouped[0], this.grouped);
       this.trigger('rebuilt');
+    }
+
+  }),
+
+  Models.User = Backbone.Model.extend({
+
+    urlRoot: '/users',
+
+    defaults: {
+      id: null,
+      login: '',
+      firstName: '',
+      lastName: '',
+      email: ''
+    },
+
+    parse: function(response) {
+      if (response.user) {
+        return response.user;
+      } else {
+        return response;
+      }
+    }
+
+  }),
+
+  Models.Users = Backbone.Collection.extend({
+
+    model: Models.User,
+    url: Models.User.prototype.urlRoot,
+
+    parse: function(response) {
+      return response.users;
     }
 
   })

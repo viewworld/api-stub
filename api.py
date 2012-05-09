@@ -142,6 +142,18 @@ def group(groupid):
         resp.status_code = 200
         return resp
 
+@app.route('/groups/<groupid>/users',
+           methods=['GET', 'POST'])
+def group_users(groupid):
+    if not int(groupid) in map(ids, testdata.groups['list']):
+        return error('Group does not exist')
+    if request.method == 'GET':
+        return jsonify(users=testdata.users['list'])
+    elif request.method == 'POST':
+        resp = jsonify(**request.json)
+        resp.status_code = 200
+        return resp
+
 def ids(object):
     return object['id']
 

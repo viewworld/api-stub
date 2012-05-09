@@ -292,7 +292,7 @@
     },
 
     newGroup: function(){
-      ViewWorld.app.router.navigate('groups/new', {trigger: true})
+      ViewWorld.app.router.navigate('groups/new', {trigger: false})
     },
 
     render: function(){
@@ -306,15 +306,16 @@
 
   Views.GroupTreeView = Backbone.View.extend({
 
-    initialize: function(){
+    initialize: function(options){
       this.groupTree = ViewWorld.app.groupTree;
       this.groupTree.bind('rebuilt', this.render, this);
+      this.groupView = options.groupView || ViewWorld.Views.GroupView;
     },
 
     renderTree: function(groups){
       if ((typeof groups == 'undefined')||(groups == null)) return null;
       for(var i=0; i<groups.length; i++){
-        var group = new ViewWorld.Views.GroupView({group: groups[i], model: groups[i].item});
+        var group = new this.groupView({group: groups[i], model: groups[i].item});
         group.render();
         this.$el.append(group.el);
         this.renderTree(groups[i].children);
@@ -331,8 +332,8 @@
 
   Views.GroupView = Backbone.View.extend({
 
-    tagName: 'tr',
     template: JST['groups/group'],
+    tagName: 'tr',
 
     events: {
       'click .delete': 'delete',
@@ -340,7 +341,7 @@
     },
 
     initialize: function(options){
-      this.model.set("level", options.group.level)
+      this.model.set("level", options.group.level);
     },
 
     delete: function(){
@@ -409,7 +410,182 @@
       return this;
     }
 
+  }),
+
+  Views.UsersView = Backbone.View.extend({
+
+    template: JST['users/page'],
+
+    events: {
+     'click .select-all': 'selectAll',
+     'click .delete-selected': 'deleteSelected',
+     'click .new-user': 'newUser'
+    },
+
+    selectAll: function(){
+      if (this.$el.find('input:not(:checked)').length > 0) {
+        this.$el.find('input').attr('checked', true);
+      } else {
+        this.$el.find('input').attr('checked', false);
+      }
+    },
+
+    deleteSelected: function(){
+      _.each(this.$el.find('input:checked'), function(group){
+        ViewWorld.app.groups.get($(group).data('id')).destroy({wait: true});
+      });
+    },
+
+    newUser: function(){
+      ViewWorld.app.router.navigate('users/new', {trigger: true})
+    },
+
+    render: function(){
+      this.$el.html(this.template);
+      this.groupTreeView = new ViewWorld.Views.GroupTreeView({el: this.$("tbody"), groupView: Views.UsersGroupView});
+      ViewWorld.app.groups.fetch();
+      return this;
+    }
+
+  }),
+
+  Views.UsersGroupView = Backbone.View.extend({
+
+    template: JST['users/group'],
+    tagName: 'tr',
+    className: 'group',
+
+    events: {
+      'click .toggle_row': 'toggleRow'
+    },
+
+    toggleRow: function(event){
+      if ($(event.target).hasClass("off")) {
+        $(event.target).removeClass("off").addClass("on");
+      } else {
+        $(event.target).removeClass("on").addClass("off");
+      }
+      $(event.target).parents("tr").nextUntil("tr.group").toggle();
+    },
+
+    initialize: function(options){
+      this.userList = new ViewWorld.Views.UserListView({collection: this.model.users});
+      this.model.set("level", options.group.level);
+    },
+
+    render: function(){
+      this.$el.html(this.template(this.model.toJSON()));
+      return this;
+    }
+
+  }),
+
+  Views.UserListView = Backbone.View.extend({
+
+    tagName: 'div',
+
+    initialize: function(){
+      this.collection.on('reset', this.addAll, this)
+    },
+
+    addOne: function(user){
+      var userView = new Views.UserView({model: user});
+      this.$el.append(userView.render().el);
+    },
+
+    addAll: function(){
+      this.collection.forEach(this.addOne, this);
+    },
+
+    render: function(){
+      this.addAll();
+    }
+
+  }),
+
+  Views.UserView = Backbone.View.extend({
+
+    template: JST['users/user'],
+    tagName: 'tr',
+
+    events: {
+      'click .delete': 'delete',
+      'click .toggle': 'toggle',
+      'click a.edit': 'edit'
+    },
+
+    delete: function(){
+      this.model.destroy({wait: true});
+    },
+
+    edit: function(event){
+      var route = $(event.target).closest('a').data('route');
+      ViewWorld.app.router.navigate(route, {trigger: true});
+    },
+
+    toggle: function(){
+
+    },
+
+    render: function(){
+      this.$el.html(this.template(this.model.toJSON()));
+      return this;
+    }
+
+  }),
+
+  Views.UserFormView = Backbone.View.extend({
+
+    template: JST['users/form'],
+
+    events: {
+      'click .cancel': 'cancel',
+      'click .delete': 'delete',
+      'click .save': 'save'
+    },
+
+    initialize: function(){
+      this.model.bind('change', this.render, this);
+    },
+
+    cancel: function(event){
+      ViewWorld.app.router.navigate($(event.target).data('route'), {trigger: true})
+    },
+
+    delete: function(){
+      this.model.destroy(
+          {
+              wait: true,
+              success: function(model, response){
+                  ViewWorld.app.router.navigate('groups', {trigger: true})
+              }
+          }
+      );
+    },
+
+    save: function(){
+      var data = {};
+      this.$el.find('input,select').each(function(){
+        data[$(this).attr('name')] = $(this).attr('value');
+      });
+      this.model.save(
+          data,
+          {
+              wait: true,
+              success: function(model, reposnse){
+                ViewWorld.app.router.navigate('groups', {trigger: true})
+              }
+          }
+      );
+    },
+
+    render: function(){
+      this.$el.html(this.template(this.model.toJSON()));
+      return this;
+    }
+
   })
+
 
 }).call(this);
 
