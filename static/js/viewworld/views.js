@@ -277,7 +277,7 @@
      'click .new-group': 'newGroup'
     },
 
-    selectAll: function(){
+    selectAll: function() {
       if (this.$el.find('input:not(:checked)').length > 0) {
         this.$el.find('input').attr('checked', true);
       } else {
@@ -285,17 +285,17 @@
       }
     },
 
-    deleteSelected: function(){
-      _.each(this.$el.find('input:checked'), function(group){
-        ViewWorld.app.groups.get($(group).data('id')).destroy({wait: true});
+    deleteSelected: function() {
+      _.each(this.$el.find('input:checked'), function(group) {
+        ViewWorld.app.groups.get(group.data('id')).destroy({wait: true});
       });
     },
 
-    newGroup: function(){
-      ViewWorld.app.router.navigate('groups/new', {trigger: false})
+    newGroup: function() {
+      ViewWorld.app.router.navigate('groups/new', {trigger: false});
     },
 
-    render: function(){
+    render: function() {
       this.$el.html(this.template);
       this.groupTreeView = new ViewWorld.Views.GroupTreeView({
         el: this.$("#group-tree"),
@@ -344,20 +344,20 @@
       'click a.edit': 'edit'
     },
 
-    initialize: function(options){
+    initialize: function(options) {
       this.level = options.level;
     },
 
-    delete: function(){
+    delete: function() {
       this.model.destroy({wait: true});
     },
 
-    edit: function(event){
+    edit: function(event) {
       var route = $(event.target).closest('a').data('route');
       ViewWorld.app.router.navigate(route, {trigger: true});
     },
 
-    render: function(){
+    render: function() {
       var data = this.model.toJSON();
       data['level'] = this.level;
       this.$el.html(this.template(data));
@@ -376,42 +376,37 @@
       'click .save': 'save'
     },
 
-    initialize: function(){
+    initialize: function() {
       this.model.bind('change', this.render, this);
     },
 
-    cancel: function(event){
+    cancel: function(event) {
       ViewWorld.app.router.navigate($(event.target).data('route'), {trigger: true})
     },
 
-    delete: function(){
-      this.model.destroy(
-          {
-              wait: true,
-              success: function(model, response){
-                  ViewWorld.app.router.navigate('groups', {trigger: true})
-              }
-          }
-      );
+    delete: function() {
+      this.model.destroy({
+        wait: true,
+        success: function(model, response) {
+          ViewWorld.app.router.navigate('groups', {trigger: true})
+        }
+      });
     },
 
-    save: function(){
+    save: function() {
       var data = {};
-      this.$el.find('input,select').each(function(){
+      this.$el.find('input,select').each(function() {
         data[$(this).attr('name')] = $(this).attr('value');
       });
-      this.model.save(
-          data,
-          {
-              wait: true,
-              success: function(model, reposnse){
-                ViewWorld.app.router.navigate('groups', {trigger: true})
-              }
-          }
-      );
+      this.model.save(data, {
+        wait: true,
+        success: function(model, response) {
+          ViewWorld.app.router.navigate('groups', {trigger: true})
+        }
+      });
     },
 
-    render: function(){
+    render: function() {
       this.$el.html(this.template(this.model.toJSON()));
       return this;
     }
@@ -428,7 +423,7 @@
      'click .new-user': 'newUser'
     },
 
-    selectAll: function(){
+    selectAll: function() {
       if (this.$el.find('input:not(:checked)').length > 0) {
         this.$el.find('input').attr('checked', true);
       } else {
@@ -436,17 +431,17 @@
       }
     },
 
-    deleteSelected: function(){
-      _.each(this.$el.find('input:checked'), function(group){
-        ViewWorld.app.groups.get($(group).data('id')).destroy({wait: true});
+    deleteSelected: function() {
+      _.each(this.$el.find('input:checked'), function(group) {
+        ViewWorld.app.groups.get(group.data('id')).destroy({wait: true});
       });
     },
 
-    newUser: function(){
+    newUser: function() {
       ViewWorld.app.router.navigate('users/new', {trigger: true})
     },
 
-    render: function(){
+    render: function() {
       this.$el.html(this.template());
       this.groupTreeView = new Views.GroupTreeView({
         el: this.$("tbody"),
@@ -469,7 +464,7 @@
       'click .toggle_row': 'toggleRow'
     },
 
-    toggleRow: function(event){
+    toggleRow: function(event) {
       if ($(event.target).hasClass("off")) {
         $(event.target).removeClass("off").addClass("on");
       } else {
@@ -478,14 +473,14 @@
       $(event.target).parents("tr").nextUntil("tr.group").toggle();
     },
 
-    initialize: function(options){
+    initialize: function(options) {
       this.userList = new ViewWorld.Views.UserListView({
         collection: this.model.users
       });
       this.level = options.level;
     },
 
-    render: function(){
+    render: function() {
       var data = this.model.toJSON();
       data['level'] = this.level;
       this.$el.html(this.template(data));
@@ -498,20 +493,20 @@
 
     tagName: 'div',
 
-    initialize: function(){
-      this.collection.on('reset', this.addAll, this)
+    initialize: function() {
+      this.collection.on('reset', this.addAll, this);
     },
 
-    addOne: function(user){
+    addOne: function(user) {
       var userView = new Views.UserView({model: user});
       this.$el.append(userView.render().el);
     },
 
-    addAll: function(){
+    addAll: function() {
       this.collection.forEach(this.addOne, this);
     },
 
-    render: function(){
+    render: function() {
       this.addAll();
     }
 
@@ -528,20 +523,20 @@
       'click a.edit': 'edit'
     },
 
-    delete: function(){
+    delete: function() {
       this.model.destroy({wait: true});
     },
 
-    edit: function(event){
+    edit: function(event) {
       var route = $(event.target).closest('a').data('route');
       ViewWorld.app.router.navigate(route, {trigger: true});
     },
 
-    toggle: function(){
+    toggle: function() {
 
     },
 
-    render: function(){
+    render: function() {
       this.$el.html(this.template(this.model.toJSON()));
       return this;
     }
@@ -558,42 +553,37 @@
       'click .save': 'save'
     },
 
-    initialize: function(){
+    initialize: function() {
       this.model.bind('change', this.render, this);
     },
 
-    cancel: function(event){
+    cancel: function(event) {
       ViewWorld.app.router.navigate($(event.target).data('route'), {trigger: true})
     },
 
     delete: function(){
-      this.model.destroy(
-          {
-              wait: true,
-              success: function(model, response){
-                  ViewWorld.app.router.navigate('groups', {trigger: true})
-              }
-          }
-      );
+      this.model.destroy({
+        wait: true,
+        success: function(model, response) {
+          ViewWorld.app.router.navigate('groups', {trigger: true})
+        }
+      });
     },
 
-    save: function(){
+    save: function() {
       var data = {};
-      this.$el.find('input,select').each(function(){
+      this.$el.find('input,select').each(function() {
         data[$(this).attr('name')] = $(this).attr('value');
       });
-      this.model.save(
-          data,
-          {
-              wait: true,
-              success: function(model, reposnse){
-                ViewWorld.app.router.navigate('groups', {trigger: true})
-              }
-          }
-      );
+      this.model.save(data, {
+        wait: true,
+        success: function(model, response) {
+          ViewWorld.app.router.navigate('groups', {trigger: true})
+        }
+      });
     },
 
-    render: function(){
+    render: function() {
       this.$el.html(this.template(this.model.toJSON()));
       return this;
     }
