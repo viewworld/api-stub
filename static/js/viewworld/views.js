@@ -297,7 +297,10 @@
 
     render: function(){
       this.$el.html(this.template);
-      this.groupTreeView = new ViewWorld.Views.GroupTreeView({el: this.$("#group-tree")});
+      this.groupTreeView = new ViewWorld.Views.GroupTreeView({
+        el: this.$("#group-tree"),
+        collection: ViewWorld.app.groups
+      });
       ViewWorld.app.groups.fetch();
       return this;
     }
@@ -306,25 +309,26 @@
 
   Views.GroupTreeView = Backbone.View.extend({
 
-    initialize: function(options){
-      this.groupTree = ViewWorld.app.groupTree;
-      this.groupTree.bind('rebuilt', this.render, this);
+    initialize: function(options) {
+      this.collection.bind('rebuilt', this.render, this);
       this.groupView = options.groupView || ViewWorld.Views.GroupView;
     },
 
-    renderTree: function(groups){
-      if ((typeof groups == 'undefined')||(groups == null)) return null;
-      for(var i=0; i<groups.length; i++){
-        var group = new this.groupView({group: groups[i], model: groups[i].item});
-        group.render();
-        this.$el.append(group.el);
-        this.renderTree(groups[i].children);
-      };
+    renderTree: function(groups) {
+      if ((groups === 'undefined') || (groups == null)) return null;
+      _.each(groups, function(group) {
+        var view = new this.groupView({
+          model: group.item,
+          level: group.level
+        });
+        this.$el.append(view.render().el);
+        this.renderTree(group.children);
+      }, this);
     },
 
-    render: function(){
-      this.$el.html('');
-      this.renderTree(this.groupTree.tree);
+    render: function() {
+      this.$el.empty();
+      this.renderTree(this.collection.tree);
       return this;
     }
 
@@ -341,7 +345,7 @@
     },
 
     initialize: function(options){
-      this.model.set("level", options.group.level);
+      this.level = options.level;
     },
 
     delete: function(){
@@ -354,7 +358,9 @@
     },
 
     render: function(){
-      this.$el.html(this.template(this.model.toJSON()));
+      var data = this.model.toJSON();
+      data['level'] = this.level;
+      this.$el.html(this.template(data));
       return this;
     }
 
@@ -441,8 +447,12 @@
     },
 
     render: function(){
-      this.$el.html(this.template);
-      this.groupTreeView = new ViewWorld.Views.GroupTreeView({el: this.$("tbody"), groupView: Views.UsersGroupView});
+      this.$el.html(this.template());
+      this.groupTreeView = new Views.GroupTreeView({
+        el: this.$("tbody"),
+        collection: ViewWorld.app.groups,
+        groupView: Views.UsersGroupView
+      });
       ViewWorld.app.groups.fetch();
       return this;
     }
@@ -469,12 +479,16 @@
     },
 
     initialize: function(options){
-      this.userList = new ViewWorld.Views.UserListView({collection: this.model.users});
-      this.model.set("level", options.group.level);
+      this.userList = new ViewWorld.Views.UserListView({
+        collection: this.model.users
+      });
+      this.level = options.level;
     },
 
     render: function(){
-      this.$el.html(this.template(this.model.toJSON()));
+      var data = this.model.toJSON();
+      data['level'] = this.level;
+      this.$el.html(this.template(data));
       return this;
     }
 

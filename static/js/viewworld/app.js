@@ -93,8 +93,7 @@
   ViewWorld.app = {};
   ViewWorld.app.forms = new ViewWorld.Models.FormSet;
   ViewWorld.app.collections = new ViewWorld.Models.CollectionSet;
-  ViewWorld.app.groups = new ViewWorld.Models.Groups;
-  ViewWorld.app.groupTree = new ViewWorld.Models.GroupTree;
+  ViewWorld.app.groups = new ViewWorld.Models.GroupTree;
 
 }).call(this);
 

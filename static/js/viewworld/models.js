@@ -151,7 +151,8 @@
 
     defaults: {
       id: null,
-      name: ''
+      name: '',
+      parentId: 0
     },
 
     initialize: function(){
@@ -172,28 +173,30 @@
 
   }),
 
-  Models.GroupTree = Backbone.Model.extend({
+  Models.GroupTree = Models.Groups.extend({
 
-    initialize: function(){
-      ViewWorld.app.groups.bind('reset add remove', this.rebuildTree, this);
+    initialize: function() {
+      this.bind('reset', this.rebuildTree, this);
     },
 
-    buildTree: function(branch, list, level) {
-      if (typeof branch == 'undefined') return null;
-      if (level == undefined) { level = 1}
+    buildTree: function(roots, groupsByParent, level) {
+      if (roots === undefined) return null;
+      if (level === undefined) level = 1;
       var tree = [];
-      for(var i=0; i<branch.length; i++)
-        tree.push( {
-          item: branch[i],
-          children: this.buildTree(list[branch[i].id ], list, level+1),
+      _.each(roots, function(root) {
+        tree.push({
+          item: root,
+          children: this.buildTree(groupsByParent[root.id],
+                                   groupsByParent, level+1),
           level: level
         });
+      }, this);
       return tree;
     },
 
     rebuildTree: function() {
-      this.grouped = ViewWorld.app.groups.groupBy(function(group){return group.get('parentId')});
-      this.tree = this.buildTree(this.grouped[0], this.grouped);
+      var grouped = this.groupBy(function(group) {return group.get('parentId')});
+      this.tree = this.buildTree(grouped[0], grouped);
       this.trigger('rebuilt');
     }
 
