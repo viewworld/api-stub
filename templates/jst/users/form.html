@@ -1,0 +1,94 @@
+<div class="page-header">
+    <h2>New user</h2>
+</div>
+
+<form class="form-horizontal">
+  <fieldset>
+
+      <div class="control-group">
+          <label class="control-label"><abbr>*</abbr>Login:</label>
+          <div class="controls">
+              <input type="text" class="input-large" value="<%= login %>"/>
+          </div>
+      </div>
+
+      <div class="control-group">
+          <label class="control-label"><abbr>*</abbr>First name:</label>
+          <div class="controls">
+              <input type="text" class="input-large" value="<%= firstName %>"/>
+          </div>
+      </div>
+
+      <div class="control-group">
+          <label class="control-label"><abbr>*</abbr>Last name:</label>
+          <div class="controls">
+              <input type="text" class="input-large" value="<%= lastName %>"/>
+          </div>
+      </div>
+
+      <div class="control-group">
+          <label class="control-label"><abbr>*</abbr>Email:</label>
+          <div class="controls">
+              <input type="text" class="input-large" value="<%= email %>"/>
+          </div>
+      </div>
+
+      <hr>
+
+      <div class="control-group">
+          <label class="control-label"><abbr>*</abbr>Group:</label>
+          <div class="controls">
+              <select>
+                  <option selected="selected">-- select --</option>
+                  <option>Kongo</option>
+                  <option>Owado</option>
+              </select>
+          </div>
+      </div>
+
+      <div class="control-group">
+          <label class="control-label"><abbr>*</abbr>Role:</label>
+          <div class="controls">
+              <select>
+                  <option selected="selected">-- select --</option>
+                  <option>Manager</option>
+                  <option>example 1</option>
+                  <option>example 2</option>
+                  <option>example 3</option>
+              </select>
+          </div>
+      </div>
+
+      <hr>
+
+      <div class="control-group">
+          <label class="control-label">Language:</label>
+          <div class="controls">
+              <select>
+                  <option selected="selected">Danish</option>
+                  <option>English</option>
+                  <option>French</option>
+                  <option>Polish</option>
+              </select>
+          </div>
+      </div>
+
+      <div class="control-group">
+          <label class="control-label">Timezone:</label>
+          <div class="controls">
+              <select>
+                  <option selected="selected">GTM +1</option>
+                  <option selected="selected">GTM +2</option>
+                  <option selected="selected">GTM +3</option>
+                  <option selected="selected">GTM +4</option>
+              </select>
+          </div>
+      </div>
+
+      <div class="form-actions">
+          <a class="btn btn-primary save"><i class="icon-ok icon-white"></i> Create</a>
+          <a class="btn cancel" data-route="users">Cancel</a>
+      </div>
+
+  </fieldset>
+</form>

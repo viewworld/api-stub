@@ -118,7 +118,44 @@ def collection(collectionid):
     elif request.method == 'POST':
         return '', 501
 
+@app.route('/groups',
+           methods=['GET', 'POST'])
+def groups():
+    if request.method == 'GET':
+        return jsonify(groups=testdata.groups['list'])
+    elif request.method == 'POST':
+        resp = jsonify(**request.json)
+        resp.status_code = 200
+        return resp
 
+@app.route('/groups/<int:groupid>',
+           methods=['GET', 'PUT', 'DELETE'])
+def group(groupid):
+    if not groupid in [g['id'] for g in testdata.groups['list']]:
+        return error('Group does not exist')
+    if request.method == 'GET':
+        return jsonify(testdata.groups['list'][groupid-1])
+    elif request.method == 'DELETE':
+        return '', 200
+    elif request.method == 'PUT':
+        resp = jsonify(**request.json)
+        resp.status_code = 200
+        return resp
+
+@app.route('/groups/<groupid>/users',
+           methods=['GET', 'POST'])
+def group_users(groupid):
+    if not int(groupid) in map(ids, testdata.groups['list']):
+        return error('Group does not exist')
+    if request.method == 'GET':
+        return jsonify(users=testdata.users['list'])
+    elif request.method == 'POST':
+        resp = jsonify(**request.json)
+        resp.status_code = 200
+        return resp
+
+def ids(object):
+    return object['id']
 
 if __name__ == '__main__':
     app.run(debug=True)

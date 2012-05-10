@@ -145,6 +145,96 @@
 
   });
 
+  Models.Group = Backbone.Model.extend({
+
+    urlRoot: '/groups',
+
+    defaults: {
+      id: null,
+      name: '',
+      parentId: 0
+    },
+
+    initialize: function(){
+      this.users = new Models.Users;
+      this.users.url = '/groups/' + this.id + '/users';
+    },
+
+  }),
+
+  Models.Groups = Backbone.Collection.extend({
+
+    model: Models.Group,
+    url: Models.Group.prototype.urlRoot,
+
+    parse: function(response) {
+      return response.groups;
+    }
+
+  }),
+
+  Models.GroupTree = Models.Groups.extend({
+
+    initialize: function() {
+      this.bind('reset', this.rebuildTree, this);
+    },
+
+    buildTree: function(roots, groupsByParent, level) {
+      if (roots === undefined) return null;
+      if (level === undefined) level = 1;
+      var tree = [];
+      _.each(roots, function(root) {
+        tree.push({
+          item: root,
+          children: this.buildTree(groupsByParent[root.id],
+                                   groupsByParent, level+1),
+          level: level
+        });
+      }, this);
+      return tree;
+    },
+
+    rebuildTree: function() {
+      var grouped = this.groupBy(function(group) {return group.get('parentId')});
+      this.tree = this.buildTree(grouped[0], grouped);
+      this.trigger('rebuilt');
+    }
+
+  }),
+
+  Models.User = Backbone.Model.extend({
+
+    urlRoot: '/users',
+
+    defaults: {
+      id: null,
+      login: '',
+      firstName: '',
+      lastName: '',
+      email: ''
+    },
+
+    parse: function(response) {
+      if (response.user) {
+        return response.user;
+      } else {
+        return response;
+      }
+    }
+
+  }),
+
+  Models.Users = Backbone.Collection.extend({
+
+    model: Models.User,
+    url: Models.User.prototype.urlRoot,
+
+    parse: function(response) {
+      return response.users;
+    }
+
+  })
+
 }).call(this);
 
 /* vi: set sw=2 ts=2: */

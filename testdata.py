@@ -317,6 +317,64 @@ collections = {
     }
 }
 
+groups = {
+    "list": [
+        {
+            "id": 1,
+            "name": 'ViewWorld',
+            "parentId": 0
+        },
+        {
+            "id": 2,
+            "name": 'Africa',
+            "parentId": 1
+        },
+        {
+            "id": 3,
+            "name": 'Kongo',
+            "parentId": 2
+        },
+        {
+            "id": 4,
+            "name": 'Owando',
+            "parentId": 3
+        },
+        {
+            "id": 5,
+            "name": 'Makoua',
+            "parentId": 3
+        },
+        {
+            "id": 6,
+            "name": 'Gabon',
+            "parentId": 2
+        },
+        {
+            "id": 7,
+            "name": 'Franceville',
+            "parentId": 6
+        },
+        {
+            "id": 8,
+            "name": 'Europe',
+            "parentId": 1
+        }
+    ]
+}
+
+users = {
+    "list": [
+        {
+            "id": 1,
+            "login": 'john_doe',
+            "role": 'Field Officer',
+            "firstName": 'John',
+            "lastName": 'Doe',
+            "email": 'john@doe.com',
+            "groupId": 1
+        }
+    ]
+}
 
 
 
