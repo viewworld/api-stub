@@ -128,13 +128,13 @@ def groups():
         resp.status_code = 200
         return resp
 
-@app.route('/groups/<groupid>',
+@app.route('/groups/<int:groupid>',
            methods=['GET', 'PUT', 'DELETE'])
 def group(groupid):
-    if not int(groupid) in map(ids, testdata.groups['list']):
+    if not groupid in [g['id'] for g in testdata.groups['list']]:
         return error('Group does not exist')
     if request.method == 'GET':
-        return jsonify(group=testdata.groups['list'][int(groupid)-1])
+        return jsonify(testdata.groups['list'][groupid-1])
     elif request.method == 'DELETE':
         return '', 200
     elif request.method == 'PUT':

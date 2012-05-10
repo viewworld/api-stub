@@ -159,14 +159,6 @@
       this.users.url = '/groups/' + this.id + '/users';
     },
 
-    parse: function(response) {
-      if (response.group) {
-        return response.group;
-      } else {
-        return response;
-      }
-    }
-
   }),
 
   Models.Groups = Backbone.Collection.extend({
